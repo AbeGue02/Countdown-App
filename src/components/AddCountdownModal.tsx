@@ -1,44 +1,67 @@
 import DateTimePicker, {
-    DateTimePickerEvent,
+  DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
   onAdd: (input: { name: string; emoji: string; targetDate: number }) => void;
+  mode?: "add" | "edit";
+  initialValues?: {
+    name: string;
+    emoji: string;
+    targetDate: number;
+  } | null;
 }
 
-export default function AddCountdownModal({ visible, onClose, onAdd }: Props) {
+function getDefaultTargetDate(): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + 30);
+  return d;
+}
+
+export default function AddCountdownModal({
+  visible,
+  onClose,
+  onAdd,
+  mode = "add",
+  initialValues = null,
+}: Props) {
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("");
-  const [targetDate, setTargetDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 30);
-    return d;
-  });
+  const [targetDate, setTargetDate] = useState(() => getDefaultTargetDate());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const reset = useCallback(() => {
     setName("");
     setEmoji("");
-    const d = new Date();
-    d.setDate(d.getDate() + 30);
-    setTargetDate(d);
+    setTargetDate(getDefaultTargetDate());
     setShowDatePicker(false);
   }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    if (mode === "edit" && initialValues) {
+      setName(initialValues.name);
+      setEmoji(initialValues.emoji);
+      setTargetDate(new Date(initialValues.targetDate));
+      setShowDatePicker(false);
+    }
+  }, [visible, mode, initialValues]);
 
   const handleClose = useCallback(() => {
     reset();
@@ -89,6 +112,9 @@ export default function AddCountdownModal({ visible, onClose, onAdd }: Props) {
     day: "numeric",
   });
 
+  const title = mode === "edit" ? "Edit Countdown" : "New Countdown";
+  const submitLabel = mode === "edit" ? "Save" : "Add";
+
   return (
     <Modal
       visible={visible}
@@ -109,13 +135,15 @@ export default function AddCountdownModal({ visible, onClose, onAdd }: Props) {
           >
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>New Countdown</Text>
+          <Text style={styles.title}>{title}</Text>
           <TouchableOpacity
             onPress={handleSubmit}
             testID="modal-add-button"
-            accessibilityLabel="Add countdown"
+            accessibilityLabel={
+              mode === "edit" ? "Save countdown" : "Add countdown"
+            }
           >
-            <Text style={styles.addText}>Add</Text>
+            <Text style={styles.addText}>{submitLabel}</Text>
           </TouchableOpacity>
         </View>
 

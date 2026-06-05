@@ -14,6 +14,7 @@ interface Props {
   isActiveWidget: boolean;
   onDelete: (id: number) => void;
   onSetWidget: (id: number) => void;
+  onEdit: (countdown: Countdown) => void;
 }
 
 function getTimeComponents(targetDate: number) {
@@ -38,6 +39,7 @@ export default function CountdownCard({
   isActiveWidget,
   onDelete,
   onSetWidget,
+  onEdit,
 }: Props) {
   const [timeLeft, setTimeLeft] = useState(() =>
     getTimeComponents(countdown.targetDate),
@@ -62,9 +64,12 @@ export default function CountdownCard({
   }, [countdown.id, countdown.name, onDelete]);
 
   return (
-    <View
+    <TouchableOpacity
       style={[styles.card, isActiveWidget && styles.activeWidgetCard]}
       testID={`countdown-card-${countdown.id}`}
+      onPress={() => onEdit(countdown)}
+      activeOpacity={0.95}
+      accessibilityLabel={`Edit ${countdown.name}`}
     >
       <View style={styles.header}>
         <Text style={styles.emoji}>{countdown.emoji}</Text>
@@ -135,7 +140,7 @@ export default function CountdownCard({
           {isActiveWidget ? "Showing on Widget" : "Set as Widget"}
         </Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
 

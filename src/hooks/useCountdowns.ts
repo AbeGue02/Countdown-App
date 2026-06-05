@@ -5,6 +5,7 @@ import {
     getActiveWidgetCountdownId,
     getCountdowns,
     setActiveWidgetCountdownId,
+    updateCountdown,
 } from "@/db/database";
 import type { Countdown } from "@/types";
 import { useSQLiteContext } from "expo-sqlite";
@@ -55,6 +56,28 @@ export function useCountdowns() {
     [db, activeWidgetCountdownId],
   );
 
+  const edit = useCallback(
+    async (
+      id: number,
+      input: { name: string; emoji: string; targetDate: number },
+    ) => {
+      await updateCountdown(db, id, input);
+      setCountdowns((prev) =>
+        prev.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                name: input.name,
+                emoji: input.emoji,
+                targetDate: input.targetDate,
+              }
+            : c,
+        ),
+      );
+    },
+    [db],
+  );
+
   const removeAll = useCallback(async () => {
     await deleteAllCountdowns(db);
     setCountdowns([]);
@@ -75,6 +98,7 @@ export function useCountdowns() {
     isLoading,
     refresh,
     add,
+    edit,
     remove,
     removeAll,
     setWidgetCountdown,

@@ -43,6 +43,20 @@ function setupMockDb() {
         );
         return { lastInsertRowId: 0, changes: 1 };
       }
+      if (sql.includes("UPDATE countdowns SET")) {
+        const id = params![3] as number;
+        mockCountdowns = mockCountdowns.map((c) =>
+          c.id === id
+            ? {
+                ...c,
+                name: params![0] as string,
+                emoji: params![1] as string,
+                targetDate: params![2] as number,
+              }
+            : c,
+        );
+        return { lastInsertRowId: 0, changes: 1 };
+      }
       if (sql.includes("DELETE FROM countdowns")) {
         mockCountdowns = [];
         return { lastInsertRowId: 0, changes: 1 };
@@ -112,6 +126,33 @@ describe("useCountdowns", () => {
     });
 
     expect(result.current.countdowns).toHaveLength(0);
+  });
+
+  it("edits a countdown by id", async () => {
+    const { result } = await renderHook(() => useCountdowns());
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.add({
+        name: "Trip",
+        emoji: "🌴",
+        targetDate: future,
+      });
+    });
+
+    const id = result.current.countdowns[0].id;
+
+    await act(async () => {
+      await result.current.edit(id, {
+        name: "Updated Trip",
+        emoji: "✈️",
+        targetDate: future + 86400000,
+      });
+    });
+
+    expect(result.current.countdowns[0].name).toBe("Updated Trip");
+    expect(result.current.countdowns[0].emoji).toBe("✈️");
+    expect(result.current.countdowns[0].targetDate).toBe(future + 86400000);
   });
 
   it("removes all countdowns and resets widget id", async () => {

@@ -14,6 +14,7 @@ const mockCountdown: Countdown = {
 
 const mockDelete = jest.fn();
 const mockSetWidget = jest.fn();
+const mockEdit = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -27,6 +28,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByText("Summer Vacation")).toBeTruthy();
@@ -40,6 +42,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByText("days")).toBeTruthy();
@@ -55,6 +58,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByText("Set as Widget")).toBeTruthy();
@@ -67,6 +71,7 @@ describe("CountdownCard", () => {
         isActiveWidget={true}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByText("Showing on Widget")).toBeTruthy();
@@ -80,6 +85,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     fireEvent.press(getByTestId("set-widget-button-1"));
@@ -93,6 +99,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByTestId("delete-button-1")).toBeTruthy();
@@ -109,6 +116,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     expect(getByText("🎉 Completed!")).toBeTruthy();
@@ -122,6 +130,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
       />,
     );
     await act(async () => {
@@ -129,5 +138,19 @@ describe("CountdownCard", () => {
     });
     expect(getByText("days")).toBeTruthy();
     jest.useRealTimers();
+  });
+
+  it("calls onEdit when the countdown card is pressed", async () => {
+    const { getByTestId } = await render(
+      <CountdownCard
+        countdown={mockCountdown}
+        isActiveWidget={false}
+        onDelete={mockDelete}
+        onSetWidget={mockSetWidget}
+        onEdit={mockEdit}
+      />,
+    );
+    fireEvent.press(getByTestId("countdown-card-1"));
+    expect(mockEdit).toHaveBeenCalledWith(mockCountdown);
   });
 });

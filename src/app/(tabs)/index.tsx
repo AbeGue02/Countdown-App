@@ -3,15 +3,16 @@ import CountdownCard from "@/components/CountdownCard";
 import EmptyState from "@/components/EmptyState";
 import { useCountdowns } from "@/hooks/useCountdowns";
 import { useWidgetSync } from "@/hooks/useWidget";
+import type { Countdown } from "@/types";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function HomeScreen() {
@@ -20,6 +21,7 @@ export default function HomeScreen() {
     activeWidgetCountdownId,
     isLoading,
     add,
+    edit,
     remove,
     setWidgetCountdown,
   } = useCountdowns();
@@ -27,13 +29,27 @@ export default function HomeScreen() {
   useWidgetSync(countdowns, activeWidgetCountdownId);
 
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleAdd = useCallback(
-    async (input: { name: string; emoji: string; targetDate: number }) => {
-      await add(input);
-    },
-    [add],
+  const [editingCountdown, setEditingCountdown] = useState<Countdown | null>(
+    null,
   );
+
+  const handleSubmitCountdown = useCallback(
+    async (input: { name: string; emoji: string; targetDate: number }) => {
+      if (editingCountdown) {
+        await edit(editingCountdown.id, input);
+      } else {
+        await add(input);
+      }
+      setModalVisible(false);
+      setEditingCountdown(null);
+    },
+    [add, edit, editingCountdown],
+  );
+
+  const handleOpenEdit = useCallback((countdown: Countdown) => {
+    setEditingCountdown(countdown);
+    setModalVisible(true);
+  }, []);
 
   const handleSetWidget = useCallback(
     async (id: number) => {
@@ -66,6 +82,7 @@ export default function HomeScreen() {
               isActiveWidget={activeWidgetCountdownId === item.id}
               onDelete={remove}
               onSetWidget={handleSetWidget}
+              onEdit={handleOpenEdit}
             />
           )}
           contentContainerStyle={styles.list}
@@ -75,7 +92,10 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          setEditingCountdown(null);
+          setModalVisible(true);
+        }}
         testID="add-countdown-fab"
         accessibilityLabel="Add new countdown"
       >
@@ -84,8 +104,21 @@ export default function HomeScreen() {
 
       <AddCountdownModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onAdd={handleAdd}
+        onClose={() => {
+          setModalVisible(false);
+          setEditingCountdown(null);
+        }}
+        onAdd={handleSubmitCountdown}
+        mode={editingCountdown ? "edit" : "add"}
+        initialValues={
+          editingCountdown
+            ? {
+                name: editingCountdown.name,
+                emoji: editingCountdown.emoji,
+                targetDate: editingCountdown.targetDate,
+              }
+            : null
+        }
       />
     </View>
   );

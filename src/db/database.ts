@@ -57,6 +57,17 @@ export async function deleteCountdown(
   await db.runAsync("DELETE FROM countdowns WHERE id = ?", [id]);
 }
 
+export async function updateCountdown(
+  db: SQLite.SQLiteDatabase,
+  id: number,
+  input: Pick<Countdown, "name" | "emoji" | "targetDate">,
+): Promise<void> {
+  await db.runAsync(
+    "UPDATE countdowns SET name = ?, emoji = ?, targetDate = ? WHERE id = ?",
+    [input.name, input.emoji, input.targetDate, id],
+  );
+}
+
 export async function deleteAllCountdowns(
   db: SQLite.SQLiteDatabase,
 ): Promise<void> {
