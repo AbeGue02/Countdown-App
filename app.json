@@ -8,6 +8,7 @@
     "scheme": "countdownapp",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.countdownapp.app",
       "icon": "./assets/expo.icon"
     },
     "android": {
@@ -25,6 +26,24 @@
     },
     "plugins": [
       "expo-router",
+      "expo-sqlite",
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "com.countdownapp.app.ExpoWidgetsTarget",
+          "groupIdentifier": "group.com.countdownapp.app",
+          "widgets": [
+            {
+              "name": "CountdownWidget",
+              "displayName": "Countdown",
+              "description": "Shows your upcoming countdown on the home screen",
+              "supportedFamilies": [
+                "systemSmall"
+              ]
+            }
+          ]
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -34,7 +53,10 @@
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-sqlite",
+      "expo-widgets",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,
