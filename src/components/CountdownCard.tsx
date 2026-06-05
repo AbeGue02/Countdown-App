@@ -1,13 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Platform,
-} from "react-native";
 import type { Countdown } from "@/types";
+import { useCallback, useEffect, useState } from "react";
+import {
+    Alert,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 interface Props {
   countdown: Countdown;
@@ -40,7 +40,7 @@ export default function CountdownCard({
   onSetWidget,
 }: Props) {
   const [timeLeft, setTimeLeft] = useState(() =>
-    getTimeComponents(countdown.targetDate)
+    getTimeComponents(countdown.targetDate),
   );
 
   useEffect(() => {
@@ -51,18 +51,14 @@ export default function CountdownCard({
   }, [countdown.targetDate]);
 
   const handleDelete = useCallback(() => {
-    Alert.alert(
-      "Delete Countdown",
-      `Delete "${countdown.name}"?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => onDelete(countdown.id),
-        },
-      ]
-    );
+    Alert.alert("Delete Countdown", `Delete "${countdown.name}"?`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => onDelete(countdown.id),
+      },
+    ]);
   }, [countdown.id, countdown.name, onDelete]);
 
   return (

@@ -1,13 +1,13 @@
-import type { SQLiteDatabase } from "expo-sqlite";
 import {
-  initDB,
-  getCountdowns,
-  addCountdown,
-  deleteCountdown,
-  deleteAllCountdowns,
-  getActiveWidgetCountdownId,
-  setActiveWidgetCountdownId,
+    addCountdown,
+    deleteAllCountdowns,
+    deleteCountdown,
+    getActiveWidgetCountdownId,
+    getCountdowns,
+    initDB,
+    setActiveWidgetCountdownId,
 } from "@/db/database";
+import type { SQLiteDatabase } from "expo-sqlite";
 
 function makeDb(overrides: Partial<SQLiteDatabase> = {}): SQLiteDatabase {
   return {
@@ -33,27 +33,42 @@ describe("initDB", () => {
 describe("getCountdowns", () => {
   it("returns rows from db.getAllAsync", async () => {
     const mockRows = [
-      { id: 1, name: "Test", emoji: "🎉", targetDate: 9999999, createdAt: 1000 },
+      {
+        id: 1,
+        name: "Test",
+        emoji: "🎉",
+        targetDate: 9999999,
+        createdAt: 1000,
+      },
     ];
     const db = makeDb({ getAllAsync: jest.fn().mockResolvedValue(mockRows) });
     const result = await getCountdowns(db);
     expect(result).toEqual(mockRows);
-    expect(db.getAllAsync).toHaveBeenCalledWith(expect.stringContaining("SELECT"));
+    expect(db.getAllAsync).toHaveBeenCalledWith(
+      expect.stringContaining("SELECT"),
+    );
   });
 });
 
 describe("addCountdown", () => {
   it("inserts and returns the new countdown with lastInsertRowId", async () => {
     const db = makeDb({
-      runAsync: jest.fn().mockResolvedValue({ lastInsertRowId: 42, changes: 1 }),
+      runAsync: jest
+        .fn()
+        .mockResolvedValue({ lastInsertRowId: 42, changes: 1 }),
     });
-    const input = { name: "Birthday", emoji: "🎂", targetDate: 2000000, createdAt: 1000 };
+    const input = {
+      name: "Birthday",
+      emoji: "🎂",
+      targetDate: 2000000,
+      createdAt: 1000,
+    };
     const result = await addCountdown(db, input);
     expect(result.id).toBe(42);
     expect(result.name).toBe("Birthday");
     expect(db.runAsync).toHaveBeenCalledWith(
       expect.stringContaining("INSERT INTO countdowns"),
-      expect.arrayContaining(["Birthday", "🎂"])
+      expect.arrayContaining(["Birthday", "🎂"]),
     );
   });
 });
@@ -64,7 +79,7 @@ describe("deleteCountdown", () => {
     await deleteCountdown(db, 5);
     expect(db.runAsync).toHaveBeenCalledWith(
       expect.stringContaining("DELETE FROM countdowns WHERE id"),
-      [5]
+      [5],
     );
   });
 });
@@ -104,7 +119,7 @@ describe("setActiveWidgetCountdownId", () => {
     await setActiveWidgetCountdownId(db, 3);
     expect(db.runAsync).toHaveBeenCalledWith(
       expect.stringContaining("UPDATE settings"),
-      ["3"]
+      ["3"],
     );
   });
 
@@ -113,7 +128,7 @@ describe("setActiveWidgetCountdownId", () => {
     await setActiveWidgetCountdownId(db, null);
     expect(db.runAsync).toHaveBeenCalledWith(
       expect.stringContaining("UPDATE settings"),
-      [null]
+      [null],
     );
   });
 });

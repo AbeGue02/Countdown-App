@@ -1,15 +1,15 @@
-import { useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { useCountdowns } from "@/hooks/useCountdowns";
 import { syncWidget } from "@/hooks/useWidget";
 import type { Countdown } from "@/types";
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
+import {
+    FlatList,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function WidgetSelectScreen() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function WidgetSelectScreen() {
       syncWidget(countdown);
       router.back();
     },
-    [setWidgetCountdown, router]
+    [setWidgetCountdown, router],
   );
 
   return (
@@ -57,7 +57,9 @@ export default function WidgetSelectScreen() {
                 accessibilityLabel={`Select ${item.name} as widget`}
               >
                 <Text style={styles.rowEmoji}>{item.emoji}</Text>
-                <Text style={[styles.rowName, isActive && styles.rowNameActive]}>
+                <Text
+                  style={[styles.rowName, isActive && styles.rowNameActive]}
+                >
                   {item.name}
                 </Text>
                 {isActive && <Text style={styles.checkmark}>✓</Text>}

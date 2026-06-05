@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
-import { useSQLiteContext } from "expo-sqlite";
 import {
-  getCountdowns,
-  addCountdown,
-  deleteCountdown,
-  deleteAllCountdowns,
-  getActiveWidgetCountdownId,
-  setActiveWidgetCountdownId,
+    addCountdown,
+    deleteAllCountdowns,
+    deleteCountdown,
+    getActiveWidgetCountdownId,
+    getCountdowns,
+    setActiveWidgetCountdownId,
 } from "@/db/database";
 import type { Countdown } from "@/types";
+import { useSQLiteContext } from "expo-sqlite";
+import { useCallback, useEffect, useState } from "react";
 
 export function useCountdowns() {
   const db = useSQLiteContext();
@@ -40,7 +40,7 @@ export function useCountdowns() {
       setCountdowns((prev) => [created, ...prev]);
       return created;
     },
-    [db]
+    [db],
   );
 
   const remove = useCallback(
@@ -52,7 +52,7 @@ export function useCountdowns() {
         setActiveWidgetCountdownIdState(null);
       }
     },
-    [db, activeWidgetCountdownId]
+    [db, activeWidgetCountdownId],
   );
 
   const removeAll = useCallback(async () => {
@@ -66,7 +66,7 @@ export function useCountdowns() {
       await setActiveWidgetCountdownId(db, id);
       setActiveWidgetCountdownIdState(id);
     },
-    [db]
+    [db],
   );
 
   return {

@@ -1,4 +1,4 @@
-import { syncWidget, clearWidget } from "@/hooks/useWidget";
+import { clearWidget, syncWidget } from "@/hooks/useWidget";
 import type { Countdown } from "@/types";
 
 // Mock the widget module
@@ -31,8 +31,10 @@ describe("syncWidget", () => {
   it("calls updateTimeline with entries matching the countdown", () => {
     syncWidget(mockCountdown);
     expect(CountdownWidget.updateTimeline).toHaveBeenCalledTimes(1);
-    const entries: { date: Date; props: { name: string; emoji: string; daysRemaining: number } }[] =
-      (CountdownWidget.updateTimeline as jest.Mock).mock.calls[0][0];
+    const entries: {
+      date: Date;
+      props: { name: string; emoji: string; daysRemaining: number };
+    }[] = (CountdownWidget.updateTimeline as jest.Mock).mock.calls[0][0];
     expect(entries.length).toBeGreaterThan(0);
     expect(entries[0].props.name).toBe("Vacation");
     expect(entries[0].props.emoji).toBe("✈️");
@@ -58,8 +60,8 @@ describe("syncWidget", () => {
       targetDate: Date.now() + 400 * 24 * 60 * 60 * 1000,
     };
     syncWidget(farFuture);
-    const entries: unknown[] =
-      (CountdownWidget.updateTimeline as jest.Mock).mock.calls[0][0];
+    const entries: unknown[] = (CountdownWidget.updateTimeline as jest.Mock)
+      .mock.calls[0][0];
     expect(entries.length).toBeLessThanOrEqual(366);
   });
 });

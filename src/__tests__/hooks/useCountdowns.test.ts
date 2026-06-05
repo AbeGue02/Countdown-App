@@ -1,6 +1,6 @@
-import { renderHook, act, waitFor } from "@testing-library/react-native";
 import { useCountdowns } from "@/hooks/useCountdowns";
 import type { Countdown } from "@/types";
+import { act, renderHook, waitFor } from "@testing-library/react-native";
 
 // ─── Mock expo-sqlite ────────────────────────────────────────────────────────
 
@@ -22,33 +22,37 @@ jest.mock("expo-sqlite", () => ({
 function setupMockDb() {
   mockDb.getAllAsync.mockImplementation(async () => [...mockCountdowns]);
   mockDb.getFirstAsync.mockImplementation(async () =>
-    activeWidgetId != null ? { value: activeWidgetId } : null
+    activeWidgetId != null ? { value: activeWidgetId } : null,
   );
-  mockDb.runAsync.mockImplementation(async (sql: string, params?: unknown[]) => {
-    if (sql.includes("INSERT INTO countdowns")) {
-      const id = nextId++;
-      mockCountdowns.push({
-        id,
-        name: params![0] as string,
-        emoji: params![1] as string,
-        targetDate: params![2] as number,
-        createdAt: params![3] as number,
-      });
-      return { lastInsertRowId: id, changes: 1 };
-    }
-    if (sql.includes("DELETE FROM countdowns WHERE id")) {
-      mockCountdowns = mockCountdowns.filter((c) => c.id !== (params![0] as number));
+  mockDb.runAsync.mockImplementation(
+    async (sql: string, params?: unknown[]) => {
+      if (sql.includes("INSERT INTO countdowns")) {
+        const id = nextId++;
+        mockCountdowns.push({
+          id,
+          name: params![0] as string,
+          emoji: params![1] as string,
+          targetDate: params![2] as number,
+          createdAt: params![3] as number,
+        });
+        return { lastInsertRowId: id, changes: 1 };
+      }
+      if (sql.includes("DELETE FROM countdowns WHERE id")) {
+        mockCountdowns = mockCountdowns.filter(
+          (c) => c.id !== (params![0] as number),
+        );
+        return { lastInsertRowId: 0, changes: 1 };
+      }
+      if (sql.includes("DELETE FROM countdowns")) {
+        mockCountdowns = [];
+        return { lastInsertRowId: 0, changes: 1 };
+      }
+      if (sql.includes("UPDATE settings") && params) {
+        activeWidgetId = params[0] != null ? String(params[0]) : null;
+      }
       return { lastInsertRowId: 0, changes: 1 };
-    }
-    if (sql.includes("DELETE FROM countdowns")) {
-      mockCountdowns = [];
-      return { lastInsertRowId: 0, changes: 1 };
-    }
-    if (sql.includes("UPDATE settings") && params) {
-      activeWidgetId = params[0] != null ? String(params[0]) : null;
-    }
-    return { lastInsertRowId: 0, changes: 1 };
-  });
+    },
+  );
 }
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
@@ -77,7 +81,11 @@ describe("useCountdowns", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     await act(async () => {
-      await result.current.add({ name: "Trip", emoji: "🌴", targetDate: future });
+      await result.current.add({
+        name: "Trip",
+        emoji: "🌴",
+        targetDate: future,
+      });
     });
 
     expect(result.current.countdowns).toHaveLength(1);
@@ -90,7 +98,11 @@ describe("useCountdowns", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     await act(async () => {
-      await result.current.add({ name: "Trip", emoji: "🌴", targetDate: future });
+      await result.current.add({
+        name: "Trip",
+        emoji: "🌴",
+        targetDate: future,
+      });
     });
     expect(result.current.countdowns).toHaveLength(1);
 
@@ -139,7 +151,11 @@ describe("useCountdowns", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     await act(async () => {
-      await result.current.add({ name: "Trip", emoji: "✈️", targetDate: future });
+      await result.current.add({
+        name: "Trip",
+        emoji: "✈️",
+        targetDate: future,
+      });
     });
     const id = result.current.countdowns[0].id;
     await act(async () => {

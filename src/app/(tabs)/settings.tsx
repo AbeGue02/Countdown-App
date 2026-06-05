@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useCountdowns } from "@/hooks/useCountdowns";
 import { clearWidget } from "@/hooks/useWidget";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function SettingsScreen() {
   const { removeAll, countdowns } = useCountdowns();
@@ -23,7 +23,7 @@ export default function SettingsScreen() {
             clearWidget();
           },
         },
-      ]
+      ],
     );
   };
 

@@ -1,19 +1,19 @@
-import { useState, useCallback } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
 import DateTimePicker, {
-  DateTimePickerEvent,
+    DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { useCallback, useState } from "react";
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 interface Props {
   visible: boolean;
@@ -58,10 +58,7 @@ export default function AddCountdownModal({ visible, onClose, onAdd }: Props) {
       return;
     }
     if (targetDate.getTime() <= Date.now()) {
-      Alert.alert(
-        "Invalid Date",
-        "Please choose a target date in the future."
-      );
+      Alert.alert("Invalid Date", "Please choose a target date in the future.");
       return;
     }
 
@@ -83,7 +80,7 @@ export default function AddCountdownModal({ visible, onClose, onAdd }: Props) {
         setTargetDate(selected);
       }
     },
-    []
+    [],
   );
 
   const formattedDate = targetDate.toLocaleDateString(undefined, {

@@ -1,7 +1,6 @@
-import React from "react";
-import { render, fireEvent, act } from "@testing-library/react-native";
 import CountdownCard from "@/components/CountdownCard";
 import type { Countdown } from "@/types";
+import { act, fireEvent, render } from "@testing-library/react-native";
 
 const futureDate = Date.now() + 5 * 24 * 60 * 60 * 1000; // 5 days from now
 
@@ -28,7 +27,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByText("Summer Vacation")).toBeTruthy();
     expect(getByText("🏖️")).toBeTruthy();
@@ -41,7 +40,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByText("days")).toBeTruthy();
     expect(getByText("hrs")).toBeTruthy();
@@ -56,7 +55,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByText("Set as Widget")).toBeTruthy();
   });
@@ -68,7 +67,7 @@ describe("CountdownCard", () => {
         isActiveWidget={true}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByText("Showing on Widget")).toBeTruthy();
     expect(getByText("Widget")).toBeTruthy();
@@ -81,7 +80,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     fireEvent.press(getByTestId("set-widget-button-1"));
     expect(mockSetWidget).toHaveBeenCalledWith(mockCountdown.id);
@@ -94,7 +93,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByTestId("delete-button-1")).toBeTruthy();
   });
@@ -110,7 +109,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     expect(getByText("🎉 Completed!")).toBeTruthy();
   });
@@ -123,7 +122,7 @@ describe("CountdownCard", () => {
         isActiveWidget={false}
         onDelete={mockDelete}
         onSetWidget={mockSetWidget}
-      />
+      />,
     );
     await act(async () => {
       jest.advanceTimersByTime(1000);

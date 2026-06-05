@@ -37,9 +37,7 @@
               "name": "CountdownWidget",
               "displayName": "Countdown",
               "description": "Shows your upcoming countdown on the home screen",
-              "supportedFamilies": [
-                "systemSmall"
-              ]
+              "supportedFamilies": ["systemSmall"]
             }
           ]
         }

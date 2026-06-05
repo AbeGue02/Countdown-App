@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import type { Countdown } from "@/types";
 import CountdownWidget from "@/widgets/CountdownWidget";
+import { useEffect } from "react";
 
 function getDaysRemaining(targetDate: number): number {
   const now = Date.now();
@@ -12,7 +12,10 @@ function getDaysRemaining(targetDate: number): number {
 export function syncWidget(countdown: Countdown): void {
   const now = new Date();
   const target = new Date(countdown.targetDate);
-  const entries: { date: Date; props: { name: string; emoji: string; daysRemaining: number } }[] = [];
+  const entries: {
+    date: Date;
+    props: { name: string; emoji: string; daysRemaining: number };
+  }[] = [];
 
   // Generate one timeline entry per day from now until target (max 365 entries)
   const msPerDay = 1000 * 60 * 60 * 24;
@@ -36,10 +39,7 @@ export function syncWidget(countdown: Countdown): void {
       props: {
         name: countdown.name,
         emoji: countdown.emoji,
-        daysRemaining: Math.max(
-          0,
-          getDaysRemaining(countdown.targetDate) - i
-        ),
+        daysRemaining: Math.max(0, getDaysRemaining(countdown.targetDate) - i),
       },
     });
   }
@@ -65,7 +65,7 @@ export function clearWidget(): void {
 
 export function useWidgetSync(
   countdowns: Countdown[],
-  activeWidgetCountdownId: number | null
+  activeWidgetCountdownId: number | null,
 ): void {
   useEffect(() => {
     if (activeWidgetCountdownId == null) {

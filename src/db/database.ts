@@ -1,5 +1,5 @@
-import * as SQLite from "expo-sqlite";
 import type { Countdown } from "@/types";
+import * as SQLite from "expo-sqlite";
 
 export async function initDB(db: SQLite.SQLiteDatabase): Promise<void> {
   await db.execAsync(`
@@ -24,20 +24,25 @@ export async function initDB(db: SQLite.SQLiteDatabase): Promise<void> {
 }
 
 export async function getCountdowns(
-  db: SQLite.SQLiteDatabase
+  db: SQLite.SQLiteDatabase,
 ): Promise<Countdown[]> {
   return db.getAllAsync<Countdown>(
-    "SELECT id, name, emoji, targetDate, createdAt FROM countdowns ORDER BY createdAt DESC"
+    "SELECT id, name, emoji, targetDate, createdAt FROM countdowns ORDER BY createdAt DESC",
   );
 }
 
 export async function addCountdown(
   db: SQLite.SQLiteDatabase,
-  countdown: Omit<Countdown, "id">
+  countdown: Omit<Countdown, "id">,
 ): Promise<Countdown> {
   const result = await db.runAsync(
     "INSERT INTO countdowns (name, emoji, targetDate, createdAt) VALUES (?, ?, ?, ?)",
-    [countdown.name, countdown.emoji, countdown.targetDate, countdown.createdAt]
+    [
+      countdown.name,
+      countdown.emoji,
+      countdown.targetDate,
+      countdown.createdAt,
+    ],
   );
   return {
     id: result.lastInsertRowId,
@@ -47,25 +52,25 @@ export async function addCountdown(
 
 export async function deleteCountdown(
   db: SQLite.SQLiteDatabase,
-  id: number
+  id: number,
 ): Promise<void> {
   await db.runAsync("DELETE FROM countdowns WHERE id = ?", [id]);
 }
 
 export async function deleteAllCountdowns(
-  db: SQLite.SQLiteDatabase
+  db: SQLite.SQLiteDatabase,
 ): Promise<void> {
   await db.runAsync("DELETE FROM countdowns");
   await db.runAsync(
-    "UPDATE settings SET value = NULL WHERE key = 'activeWidgetCountdownId'"
+    "UPDATE settings SET value = NULL WHERE key = 'activeWidgetCountdownId'",
   );
 }
 
 export async function getActiveWidgetCountdownId(
-  db: SQLite.SQLiteDatabase
+  db: SQLite.SQLiteDatabase,
 ): Promise<number | null> {
   const row = await db.getFirstAsync<{ value: string | null }>(
-    "SELECT value FROM settings WHERE key = 'activeWidgetCountdownId'"
+    "SELECT value FROM settings WHERE key = 'activeWidgetCountdownId'",
   );
   if (row?.value == null) return null;
   return parseInt(row.value, 10);
@@ -73,10 +78,10 @@ export async function getActiveWidgetCountdownId(
 
 export async function setActiveWidgetCountdownId(
   db: SQLite.SQLiteDatabase,
-  id: number | null
+  id: number | null,
 ): Promise<void> {
   await db.runAsync(
     "UPDATE settings SET value = ? WHERE key = 'activeWidgetCountdownId'",
-    [id != null ? String(id) : null]
+    [id != null ? String(id) : null],
   );
 }

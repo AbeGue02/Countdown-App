@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { Slot, useRouter } from "expo-router";
-import * as Linking from "expo-linking";
-import { SQLiteProvider } from "expo-sqlite";
 import { initDB } from "@/db/database";
+import * as Linking from "expo-linking";
+import { Slot, useRouter } from "expo-router";
+import { SQLiteProvider } from "expo-sqlite";
+import { useEffect } from "react";
 
 export default function RootLayout() {
   const router = useRouter();
@@ -33,4 +33,3 @@ export default function RootLayout() {
     </SQLiteProvider>
   );
 }
-

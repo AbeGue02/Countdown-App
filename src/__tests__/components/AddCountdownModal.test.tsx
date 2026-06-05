@@ -1,6 +1,5 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
 import AddCountdownModal from "@/components/AddCountdownModal";
+import { fireEvent, render } from "@testing-library/react-native";
 import { Alert } from "react-native";
 // Mock DateTimePicker so it renders in Jest
 jest.mock("@react-native-community/datetimepicker", () => {
@@ -21,7 +20,7 @@ async function renderModal(visible = true) {
       visible={visible}
       onClose={mockOnClose}
       onAdd={mockOnAdd}
-    />
+    />,
   );
 }
 

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function EmptyState() {
   return (
@@ -6,9 +6,8 @@ export default function EmptyState() {
       <Text style={styles.icon}>⏳</Text>
       <Text style={styles.title}>No Countdowns Yet</Text>
       <Text style={styles.subtitle}>
-        Tap the{" "}
-        <Text style={styles.highlight}>+</Text>
-        {" "}button to add your first countdown.
+        Tap the <Text style={styles.highlight}>+</Text> button to add your first
+        countdown.
       </Text>
     </View>
   );

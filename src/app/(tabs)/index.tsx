@@ -1,18 +1,18 @@
-import { useState, useCallback } from "react";
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
+import AddCountdownModal from "@/components/AddCountdownModal";
+import CountdownCard from "@/components/CountdownCard";
+import EmptyState from "@/components/EmptyState";
 import { useCountdowns } from "@/hooks/useCountdowns";
 import { useWidgetSync } from "@/hooks/useWidget";
-import CountdownCard from "@/components/CountdownCard";
-import AddCountdownModal from "@/components/AddCountdownModal";
-import EmptyState from "@/components/EmptyState";
+import { StatusBar } from "expo-status-bar";
+import { useCallback, useState } from "react";
+import {
+    ActivityIndicator,
+    FlatList,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function HomeScreen() {
   const {
@@ -32,14 +32,14 @@ export default function HomeScreen() {
     async (input: { name: string; emoji: string; targetDate: number }) => {
       await add(input);
     },
-    [add]
+    [add],
   );
 
   const handleSetWidget = useCallback(
     async (id: number) => {
       await setWidgetCountdown(id === activeWidgetCountdownId ? null : id);
     },
-    [setWidgetCountdown, activeWidgetCountdownId]
+    [setWidgetCountdown, activeWidgetCountdownId],
   );
 
   if (isLoading) {
